@@ -11,6 +11,6 @@ class Airport extends Model
     protected $table = 'Airport';
     protected $fillable = ['id','name','city','country'];
     public function employee(){
-        return $this->hasMany('App\Employee');
+        return $this->hasMany('App\Models\Employee','airport');
     }
 }

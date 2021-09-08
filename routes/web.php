@@ -18,6 +18,6 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('/api')->group(function(){
-    /*Route::get('/employee',EmployeeController::class,['except'=>['create','edit']]);*/
+    Route::resource('/employee',EmployeeController::class,['except'=>['create','edit']]);
     Route::resource('/airport',AirportController::class,['except'=>['create','edit']]);
 });

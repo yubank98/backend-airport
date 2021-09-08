@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Airport;
 use Illuminate\Http\Request;
-use SebastianBergmann\Environment\Console;
 
 class AirportController extends Controller
 {
@@ -21,6 +20,7 @@ class AirportController extends Controller
     {
         $data = Airport::all();
         if (!empty($data)) {
+            //$data = $data->load('employee');
              $response = array(
                  'status' => 'success',
                  'code' => 200,
@@ -43,7 +43,7 @@ class AirportController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**

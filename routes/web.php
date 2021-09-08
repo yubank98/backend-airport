@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AirportController;
 use App\Http\Controllers\EmployeeController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,4 +16,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/',[EmployeeController::class,'index']);
+
+Route::prefix('/api')->group(function(){
+    /*Route::get('/employee',EmployeeController::class,['except'=>['create','edit']]);*/
+    Route::resource('/airport',AirportController::class,['except'=>['create','edit']]);
+});

@@ -91,16 +91,16 @@
                     <th scope="col">Matricula</th>
                     <th scope="col">Modelo</th>
                     <th scope="col">Diseño</th>
-                    <th scope="col">Capcidad</th>
+                    <th scope="col">Capacidad</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($aviones as $l)
                 <tr>
                     <td>{{$l ->id}}</td>
-                    <td>{{$l ->model}}</td>
-                    <td>{{$l ->desing}}</td>
-                    <td>{{$l ->capacity}}</td>
+                    <td>{{$l ->name}}</td>
+                    <td>{{$l ->city}}</td>
+                    <td>{{$l ->country}}</td>
                 </tr>
                 @endforeach
             </tbody>

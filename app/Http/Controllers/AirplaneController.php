@@ -14,7 +14,22 @@ class AirplaneController extends Controller
      */
     public function index()
     {
-        //
+        $data = Airplane::all();
+        if (!empty($data)) {
+            //$data = $data->load('airport');
+             $response = array(
+                 'status' => 'success',
+                 'code' => 200,
+                 'data' => $data
+             );
+         } else {
+             $response = array(
+                 'status' => 'error',
+                 'code' => 404,
+                 'message' => 'Recurso Vacio o no Encontrado'
+             );
+         }
+         return response()->json($response, $response['code']);
     }
 
     /**
@@ -35,7 +50,55 @@ class AirplaneController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $json = $request->input('json', null);
+        $data = json_decode($json,true);
+        if (!empty($data)) {
+            $data = array_map('trim', $data);
+            $rules = [
+                'id' => 'required|numeric',
+                'airline' => 'required',
+                'model' => 'required',
+                'desing' => 'required|alpha',
+                'capacity' => 'required|numeric'
+            ];
+            $valid = \validator($data, $rules);
+            if ($valid->fails()) {
+                $response = array(
+                    'status' => 'error',
+                    'code' => 406,
+                    'message' => 'Los datos son incorrectos',
+                    'errors' => $valid->errors()
+                );
+            } else {
+                $airpln = new Airplane();
+                $airpln->id = $data['id'];
+                $airpln->airline = $data['airline'];
+                $airpln->model = $data['model'];
+                $airpln->desing = $data['desing'];
+                $airpln->capacity = $data['capacity'];
+                $save = $airpln->save();
+                if ($save > 0) {
+                    $response = array(
+                        'status' => 'success',
+                        'code' => 200,
+                        'message' => 'Datos actualizados exitosamente'
+                    );
+                } else {
+                    $response = array(
+                        'status' => 'error',
+                        'code' => 400,
+                        'message' => 'No se pudo actualizar los datos'
+                    );
+                }
+            }
+        } else {
+            $response = array(
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Recurso no encontrado'
+            );
+        }
+        return response()->json($response, $response['code']);
     }
 
     /**

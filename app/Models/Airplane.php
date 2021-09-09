@@ -9,7 +9,7 @@ class Airplane extends Model
 {
     use HasFactory;
     protected $table = 'Airplane';
-    protected $fillable = ['id','airline','model','desing'];
+    protected $fillable = ['id','airline','model','desing','capacity'];
     public function airline(){
         return $this->belongsTo('App\Models\Airline','airline');
     }

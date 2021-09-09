@@ -2,16 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Airline;
+use App\Models\FlightCatalog;
 use Illuminate\Http\Request;
 
-class AirlineController extends Controller
+class FlightCatalogController extends Controller
 {
-
-    public function __construct()
-    {
-        #middleware...
-    }
     /**
      * Display a listing of the resource.
      *
@@ -19,9 +14,9 @@ class AirlineController extends Controller
      */
     public function index()
     {
-        $data = Airline::all();
+        $data = FlightCatalog::all();
         if (!empty($data)) {
-             //$data = $data->load('airplanes');
+           //$data = $data->load('aeroline','departure','arrival');
              $response = array(
                  'status' => 'success',
                  'code' => 200,
@@ -61,8 +56,12 @@ class AirlineController extends Controller
             $data = array_map('trim', $data);
             $rules = [
                 'id' => 'required|numeric',
-                'name' => 'required',
-                'alias' => 'required|alpha'
+                'aeroline' => 'required|numeric',
+                'departure' => 'required|numeric',
+                'arrival' => 'required|numeric',
+                'estimated_time' => 'required',
+                'price_ticket' => 'required|numeric',
+                'status' => 'required|alpha'
             ];
             $valid = \validator($data, $rules);
             if ($valid->fails()) {
@@ -73,11 +72,15 @@ class AirlineController extends Controller
                     'errors' => $valid->errors()
                 );
             } else {
-                $airline = new Airline();
-                $airline->id = $data['id'];
-                $airline->name = $data['name'];
-                $airline->alias = $data['alias'];
-                $save = $airline->save();
+                $FC = new FlightCatalog();
+                $FC->id = $data['id'];
+                $FC->aeroline = $data['aeroline'];
+                $FC->departure = $data['departure'];
+                $FC->arrival = $data['arrival'];
+                $FC->estimated_time = $data['estimated_time'];
+                $FC->price_ticket = $data['price_ticket'];
+                $FC->status = $data['status'];
+                $save = $FC->save();
                 if ($save > 0) {
                     $response = array(
                         'status' => 'success',
@@ -87,7 +90,7 @@ class AirlineController extends Controller
                 } else {
                     $response = array(
                         'status' => 'error',
-                        'code' => 400,
+                        'code' => 409,
                         'message' => 'No se pudo actualizar los datos'
                     );
                 }
@@ -110,7 +113,7 @@ class AirlineController extends Controller
      */
     public function show($id)
     {
-        $data = Airline::find($id);
+        $data = FlightCatalog::find($id);
         if(is_object($data)){
             $response = array(
                 'status' => 'success',
@@ -130,10 +133,10 @@ class AirlineController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Airline  $airline
+     * @param  \App\Models\FlightCatalog  $flightCatalog
      * @return \Illuminate\Http\Response
      */
-    public function edit(Airline $airline)
+    public function edit(FlightCatalog $flightCatalog)
     {
         //
     }
@@ -153,7 +156,8 @@ class AirlineController extends Controller
             $rules = [ //se dictan las reglas en cuanto al ingreso de los datos
                 'id' => 'required|numeric',
                 'name' => 'required',
-                'alias' => 'required|alpha'
+                'surname' => 'required|alpha',
+                'airport' => 'required|numeric'
             ];
             $validate = \validator($data, $rules);
             if ($validate->fails()) { //determina si los datos siguen las reglas
@@ -167,7 +171,7 @@ class AirlineController extends Controller
                 $id = $data['id'];
                 unset($data['id']);
                 unset($data['created_at']);
-                $updated = Airline::where('id', $id)->update($data);
+                $updated = FlightCatalog::where('id', $id)->update($data);
                 if ($updated > 0) {
                     $response = array(
                         'status' => 'success',
@@ -195,13 +199,14 @@ class AirlineController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int   $id
+     * @param  \App\Models\FlightCatalog  $flightCatalog
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
+        
         if (isset($id)) {
-            $deleted = Airline::where('id', $id)->delete();
+            $deleted = FlightCatalog::where('id', $id)->delete();
             if ($deleted) {
                 $response = array(
                     'status' => 'success',

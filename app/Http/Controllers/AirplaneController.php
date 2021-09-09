@@ -142,10 +142,9 @@ class AirplaneController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Airplane  $airplane
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Airplane $airplane)
+    public function update(Request $request)
     {
         $json = $request->input('json', null);
         $data = json_decode($json, true);

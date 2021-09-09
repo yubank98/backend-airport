@@ -13,4 +13,12 @@ class Airport extends Model
     public function employee(){
         return $this->hasMany('App\Models\Employee','airport');
     }
+    public function Output_Catalog(){
+        return $this->hasMany('App\Models\FlightCatalog','departure');
+    }
+    public function Input_Catalog(){
+        return $this->hasMany('App\Models\FlightCatalog','arrival');
+    }
+
+
 }

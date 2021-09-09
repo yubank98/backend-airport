@@ -21,7 +21,7 @@ class AirlineController extends Controller
     {
         $data = Airline::all();
         if (!empty($data)) {
-            //$data = $data->load('airport');
+             //$data = $data->load('airplanes');
              $response = array(
                  'status' => 'success',
                  'code' => 200,

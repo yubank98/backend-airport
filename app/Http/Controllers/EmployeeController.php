@@ -88,7 +88,7 @@ class EmployeeController extends Controller
                 } else {
                     $response = array(
                         'status' => 'error',
-                        'code' => 400,
+                        'code' => 409,
                         'message' => 'No se pudo actualizar los datos'
                     );
                 }

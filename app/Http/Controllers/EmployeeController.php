@@ -215,7 +215,7 @@ class EmployeeController extends Controller
                 $response = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'Problemas al eleminar el recurso, puede ser que el recurso no exista'
+                    'message' => 'Problemas al eliminar el recurso, puede ser que el recurso no exista'
                 );
             }
         } else {

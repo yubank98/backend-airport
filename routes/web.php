@@ -5,6 +5,7 @@ use App\Http\Controllers\AirplaneController;
 use App\Http\Controllers\AirportController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FlightCatalogController;
+use App\Http\Controllers\PilotController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,4 +27,5 @@ Route::prefix('/api')->group(function(){
     Route::resource('/airline',AirlineController::class,['except'=>['create','edit']]);
     Route::resource('/airplane',AirplaneController::class,['except'=>['create','edit']]);
     Route::resource('/flightCatalog',FlightCatalogController::class,['except'=>['create','edit']]);
+    Route::resource('/pilot',PilotController::class,['except'=>['create','edit','update']]);
 });

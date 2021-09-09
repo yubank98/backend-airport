@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Employee;
+use App\Models\Airline;
 use Illuminate\Http\Request;
 
-class EmployeeController extends Controller
+class AirlineController extends Controller
 {
+
     public function __construct()
     {
-        //middleware
+        #middleware...
     }
     /**
      * Display a listing of the resource.
@@ -18,7 +19,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $data = Employee::all();
+        $data = Airline::all();
         if (!empty($data)) {
             //$data = $data->load('airport');
              $response = array(
@@ -61,8 +62,7 @@ class EmployeeController extends Controller
             $rules = [
                 'id' => 'required|numeric',
                 'name' => 'required',
-                'surname' => 'required|alpha',
-                'airport' => 'required|numeric'
+                'alias' => 'required|alpha'
             ];
             $valid = \validator($data, $rules);
             if ($valid->fails()) {
@@ -73,12 +73,11 @@ class EmployeeController extends Controller
                     'errors' => $valid->errors()
                 );
             } else {
-                $employee = new Employee();
-                $employee->id = $data['id'];
-                $employee->name = $data['name'];
-                $employee->surname = $data['surname'];
-                $employee->airport = $data['airport'];
-                $save = $employee->save();
+                $airline = new Airline();
+                $airline->id = $data['id'];
+                $airline->name = $data['name'];
+                $airline->alias = $data['alias'];
+                $save = $airline->save();
                 if ($save > 0) {
                     $response = array(
                         'status' => 'success',
@@ -106,12 +105,12 @@ class EmployeeController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        $data = Employee::find($id);
+        $data = Airline::find($id);
         if(is_object($data)){
             $response = array(
                 'status' => 'success',
@@ -131,10 +130,10 @@ class EmployeeController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Airline  $airline
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Airline $airline)
     {
         //
     }
@@ -143,11 +142,11 @@ class EmployeeController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Airline  $airline
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {   
+    public function update(Request $request, Airline $airline)
+    {
         $json = $request->input('json', null);
         $data = json_decode($json, true);
         if (!empty($data)) {
@@ -155,8 +154,7 @@ class EmployeeController extends Controller
             $rules = [ //se dictan las reglas en cuanto al ingreso de los datos
                 'id' => 'required|numeric',
                 'name' => 'required',
-                'surname' => 'required|alpha',
-                'airport' => 'required|numeric'
+                'alias' => 'required|alpha'
             ];
             $validate = \validator($data, $rules);
             if ($validate->fails()) { //determina si los datos siguen las reglas
@@ -170,7 +168,7 @@ class EmployeeController extends Controller
                 $id = $data['id'];
                 unset($data['id']);
                 unset($data['created_at']);
-                $updated = Employee::where('id', $id)->update($data);
+                $updated = Airline::where('id', $id)->update($data);
                 if ($updated > 0) {
                     $response = array(
                         'status' => 'success',
@@ -198,13 +196,13 @@ class EmployeeController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int   $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         if (isset($id)) {
-            $deleted = employee::where('id', $id)->delete();
+            $deleted = Airline::where('id', $id)->delete();
             if ($deleted) {
                 $response = array(
                     'status' => 'success',

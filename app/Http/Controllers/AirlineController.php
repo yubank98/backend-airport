@@ -21,7 +21,7 @@ class AirlineController extends Controller
     {
         $data = Airline::all();
         if (!empty($data)) {
-             //$data = $data->load('airplanes');
+            //$data = $data->load('airport');
              $response = array(
                  'status' => 'success',
                  'code' => 200,
@@ -142,9 +142,10 @@ class AirlineController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Airline  $airline
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, Airline $airline)
     {
         $json = $request->input('json', null);
         $data = json_decode($json, true);
@@ -212,7 +213,7 @@ class AirlineController extends Controller
                 $response = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'Problemas al eliminar el recurso, puede ser que el recurso no exista'
+                    'message' => 'Problemas al eleminar el recurso, puede ser que el recurso no exista'
                 );
             }
         } else {

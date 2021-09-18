@@ -14,8 +14,4 @@ class Airplane extends Model
         return $this->belongsTo('App\Models\Airline','airline');
     }
 
-    public function flights(){
-        return $this->hasMany('App\Models\Flight','airplane');
-    }
-
 }

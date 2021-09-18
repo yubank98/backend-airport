@@ -20,5 +20,13 @@ class Airport extends Model
         return $this->hasMany('App\Models\FlightCatalog','arrival');
     }
 
+    public function Output_flights(){
+        return $this->hasMany('App\Models\Flight','departure');
+    }
+
+    public function Input_flights(){
+        return $this->hasMany('App\Models\Flight','arrival');
+    }
+
 
 }

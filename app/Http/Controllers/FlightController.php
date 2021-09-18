@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Airport;
+use App\Models\Flight;
 use Illuminate\Http\Request;
-use DB;
-class AirportController extends Controller
+
+class FlightController extends Controller
 {
-    public function __construct()
-    {
-      //middleware  
-    }
     /**
      * Display a listing of the resource.
      *
@@ -18,22 +14,22 @@ class AirportController extends Controller
      */
     public function index()
     {
-        $data = Airport::all();
+        $data = Flight::all();
         if (!empty($data)) {
-           // $data = $data->load('employee','Input_Catalog','Output_Catalog');
-             $response = array(
-                 'status' => 'success',
-                 'code' => 200,
-                 'data' => $data
-             );
-         } else {
-             $response = array(
-                 'status' => 'error',
-                 'code' => 404,
-                 'message' => 'Recurso Vacio o no Encontrado'
-             );
-         }
-         return response()->json($response, $response['code']);
+            $data = $data->load('arrival','departure','pilot','coPilot','airplane');
+              $response = array(
+                  'status' => 'success',
+                  'code' => 200,
+                  'data' => $data
+              );
+          } else {
+              $response = array(
+                  'status' => 'error',
+                  'code' => 404,
+                  'message' => 'Recurso Vacio o no Encontrado'
+              );
+          }
+          return response()->json($response, $response['code']);
     }
 
     /**
@@ -43,7 +39,7 @@ class AirportController extends Controller
      */
     public function create()
     {
-        
+        //
     }
 
     /**
@@ -60,9 +56,13 @@ class AirportController extends Controller
             $data = array_map('trim', $data);
             $rules = [
                 'id' => 'required|numeric',
-                'name' => 'required',
-                'city' => 'required',
-                'country' => 'required'
+                'departure' => 'required|numeric',
+                'arrival' => 'required|numeric',
+                'assignedDate' => 'required',
+                'passengers' => 'required|numeric',
+                'pilot' => 'required|numeric',
+                'coPilot' => 'required|numeric',
+                'airplane' => 'required|numeric'
             ];
             $valid = \validator($data, $rules);
             if ($valid->fails()) {
@@ -73,13 +73,16 @@ class AirportController extends Controller
                     'errors' => $valid->errors()
                 );
             } else {
-                /*$airport = new Airport();
-                $airport->id = $data['id'];
-                $airport->name = $data['name'];
-                $airport->city = $data['city'];
-                $airport->country = $data['country'];*/
-                $save = DB::select('exec spAirportCreate ?, ?, ?, ?',array($data['id'],$data['name'],$data['city'],$data['country'])); 
-                //$save = $airport->save();
+                $F = new Flight();
+                $F->id = $data['id'];
+                $F->departure = $data['departure'];
+                $F->arrival = $data['arrival'];
+                $F->assignedDate = $data['assignedDate'];
+                $F->passengers = $data['passengers'];
+                $F->pilot = $data['pilot'];
+                $F->coPilot = $data['coPilot'];
+                $F->airplane = $data['airplane'];
+                $save = $F->save();
                 if ($save > 0) {
                     $response = array(
                         'status' => 'success',
@@ -89,7 +92,7 @@ class AirportController extends Controller
                 } else {
                     $response = array(
                         'status' => 'error',
-                        'code' => 400,
+                        'code' => 409,
                         'message' => 'No se pudo actualizar los datos'
                     );
                 }
@@ -101,18 +104,18 @@ class AirportController extends Controller
                 'message' => 'Recurso no encontrado'
             );
         }
-        return response()->json($response, $save);
+        return response()->json($response, $response['code']);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  id $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        $data = Airport::find($id);
+        $data = Flight::find($id);
         if(is_object($data)){
             $response = array(
                 'status' => 'success',
@@ -132,10 +135,10 @@ class AirportController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Flight  $flight
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Flight $flight)
     {
         //
     }
@@ -144,7 +147,6 @@ class AirportController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
@@ -155,9 +157,13 @@ class AirportController extends Controller
             $data = array_map('trim', $data);
             $rules = [ //se dictan las reglas en cuanto al ingreso de los datos
                 'id' => 'required|numeric',
-                'name' => 'required',
-                'city' => 'required|alpha',
-                'country' => 'required|alpha'
+                'departure' => 'required|numeric',
+                'arrival' => 'required|numeric',
+                'assignedDate' => 'required',
+                'passengers' => 'required|numeric',
+                'pilot' => 'required|numeric',
+                'coPilot' => 'required|numeric',
+                'airplane' => 'required|numeric'
             ];
             $validate = \validator($data, $rules);
             if ($validate->fails()) { //determina si los datos siguen las reglas
@@ -171,7 +177,7 @@ class AirportController extends Controller
                 $id = $data['id'];
                 unset($data['id']);
                 unset($data['created_at']);
-                $updated = Airport::where('id', $id)->update($data);
+                $updated = Flight::where('id', $id)->update($data);
                 if ($updated > 0) {
                     $response = array(
                         'status' => 'success',
@@ -199,13 +205,13 @@ class AirportController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Flight  $flight
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Flight $flight)
     {
         if (isset($id)) {
-            $deleted = Airport::where('id', $id)->delete();
+            $deleted = Flight::where('id', $id)->delete();
             if ($deleted) {
                 $response = array(
                     'status' => 'success',

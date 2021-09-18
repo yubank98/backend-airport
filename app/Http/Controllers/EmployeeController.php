@@ -88,7 +88,7 @@ class EmployeeController extends Controller
                 } else {
                     $response = array(
                         'status' => 'error',
-                        'code' => 400,
+                        'code' => 409,
                         'message' => 'No se pudo actualizar los datos'
                     );
                 }
@@ -146,7 +146,7 @@ class EmployeeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {   
         $json = $request->input('json', null);
         $data = json_decode($json, true);
@@ -215,7 +215,7 @@ class EmployeeController extends Controller
                 $response = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'Problemas al eleminar el recurso, puede ser que el recurso no exista'
+                    'message' => 'Problemas al eliminar el recurso, puede ser que el recurso no exista'
                 );
             }
         } else {

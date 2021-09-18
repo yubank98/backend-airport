@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Airport;
 use Illuminate\Http\Request;
-
+use DB;
 class AirportController extends Controller
 {
     public function __construct()
@@ -20,7 +20,7 @@ class AirportController extends Controller
     {
         $data = Airport::all();
         if (!empty($data)) {
-            //$data = $data->load('employee');
+           // $data = $data->load('employee','Input_Catalog','Output_Catalog');
              $response = array(
                  'status' => 'success',
                  'code' => 200,
@@ -61,8 +61,8 @@ class AirportController extends Controller
             $rules = [
                 'id' => 'required|numeric',
                 'name' => 'required',
-                'city' => 'required|alpha',
-                'country' => 'required|alpha'
+                'city' => 'required',
+                'country' => 'required'
             ];
             $valid = \validator($data, $rules);
             if ($valid->fails()) {
@@ -73,12 +73,13 @@ class AirportController extends Controller
                     'errors' => $valid->errors()
                 );
             } else {
-                $airport = new Airport();
+                /*$airport = new Airport();
                 $airport->id = $data['id'];
                 $airport->name = $data['name'];
                 $airport->city = $data['city'];
-                $airport->country = $data['country'];
-                $save = $airport->save();
+                $airport->country = $data['country'];*/
+                $save = DB::select('exec spAirportCreate ?, ?, ?, ?',array($data['id'],$data['name'],$data['city'],$data['country'])); 
+                //$save = $airport->save();
                 if ($save > 0) {
                     $response = array(
                         'status' => 'success',
@@ -100,7 +101,7 @@ class AirportController extends Controller
                 'message' => 'Recurso no encontrado'
             );
         }
-        return response()->json($response, $response['code']);
+        return response()->json($response, $save);
     }
 
     /**
@@ -146,7 +147,7 @@ class AirportController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         $json = $request->input('json', null);
         $data = json_decode($json, true);
@@ -215,7 +216,7 @@ class AirportController extends Controller
                 $response = array(
                     'status' => 'error',
                     'code' => 400,
-                    'message' => 'Problemas al eleminar el recurso, puede ser que el recurso no exista'
+                    'message' => 'Problemas al eliminar el recurso, puede ser que el recurso no exista'
                 );
             }
         } else {

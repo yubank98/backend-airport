@@ -20,7 +20,7 @@ class AirportController extends Controller
     {
         $data = Airport::all();
         if (!empty($data)) {
-           // $data = $data->load('employee','Input_Catalog','Output_Catalog');
+           //$data = $data->load('employee','Input_Catalog','Output_Catalog');
              $response = array(
                  'status' => 'success',
                  'code' => 200,
@@ -73,24 +73,19 @@ class AirportController extends Controller
                     'errors' => $valid->errors()
                 );
             } else {
-                /*$airport = new Airport();
-                $airport->id = $data['id'];
-                $airport->name = $data['name'];
-                $airport->city = $data['city'];
-                $airport->country = $data['country'];*/
-                $save = DB::select('exec spAirportCreate ?, ?, ?, ?',array($data['id'],$data['name'],$data['city'],$data['country'])); 
-                //$save = $airport->save();
+                $datos = [$data['id'],$data['name'],$data['city'],$data['country']];
+                $save = DB::insert('exec spAirportCreate ?, ?, ?, ?',$datos);
                 if ($save > 0) {
                     $response = array(
                         'status' => 'success',
                         'code' => 200,
-                        'message' => 'Datos actualizados exitosamente'
+                        'message' => 'Datos ingresados exitosamente'
                     );
                 } else {
                     $response = array(
                         'status' => 'error',
                         'code' => 400,
-                        'message' => 'No se pudo actualizar los datos'
+                        'message' => 'No se pudo ingresar los datos'
                     );
                 }
             }
@@ -101,7 +96,7 @@ class AirportController extends Controller
                 'message' => 'Recurso no encontrado'
             );
         }
-        return response()->json($response, $save);
+        return response()->json($response, $response['code']);
     }
 
     /**

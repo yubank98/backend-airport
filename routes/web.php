@@ -26,6 +26,7 @@ Route::prefix('/api')->group(function(){
     #Rutas especificas
     Route::post('/user/login',[UserController::class,'login']);
     Route::post('/user/getIdentity',[UserController::class,'getidentity']);
+    Route::get('/airport/employee',[AirportController::class,'findEmployee']);
     #Rutas automaticas restfull
     Route::resource('/user',UserController::class,['except'=>['create','edit']]);
     Route::resource('/employee',EmployeeController::class,['except'=>['create','edit']]);

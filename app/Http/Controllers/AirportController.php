@@ -36,6 +36,52 @@ class AirportController extends Controller
          return response()->json($response, $response['code']);
     }
 
+    //METODO PARA LLAMAR A UNA FUNCION
+    // se debe crear una ruta especifica y se envian los datos por params en postman
+    public function findEmployee(Request $request)
+    {
+        $json = $request->input('json', null);
+        $data = json_decode($json,true);
+        if (!empty($data)){
+            $data = array_map('trim', $data);
+            $rules = [ //se dictan las reglas en cuanto al ingreso de los datos
+                'idAirport' => 'required',
+            ];
+            $validate = \validator($data, $rules);
+            if ($validate->fails()) { //determina si los datos siguen las reglas
+                $response = array(
+                    'status' => 'error',
+                    'code' => 406,
+                    'message' => 'Los datos enviados son incorrectos',
+                    'errors' => $validate->errors()
+                );
+            } else {
+                $id = $data['idAirport'];
+                $updated = DB::select("select * from f_airportEmployee ('$id')");
+                if ($updated > 0) {
+                    $response = array(
+                        'status' => 'success',
+                        'code' => 200,
+                        'data' => $updated
+                    );
+                } else {
+                    $response = array(
+                        'status' => 'error',
+                        'code' => 400,
+                        'message' => 'No se pudo actualizar los datos'
+                    );
+                }
+            }
+        } else {
+            $response = array(
+                'status' => 'error',
+                'code' => 400,
+                'message' => 'Faltan Datos'
+            );
+        }
+        return response()->json($response, $response['code']);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

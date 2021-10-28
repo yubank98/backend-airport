@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        //$this->middleware('api.auth',['except'=>['login','store']]);
+        $this->middleware('api.auth', ['except' => ['login','store']]);
     }
 
     public function __invoke()
@@ -26,20 +26,20 @@ class UserController extends Controller
     {
         $data = user::all();
         if (!empty($data)) {
-             //$data = $data->load('airplanes');
-             $response = array(
-                 'status' => 'success',
-                 'code' => 200,
-                 'data' => $data
-             );
-         } else {
-             $response = array(
-                 'status' => 'error',
-                 'code' => 404,
-                 'message' => 'Recurso Vacio o no Encontrado'
-             );
-         }
-         return response()->json($response, $response['code']);
+            //$data = $data->load('airplanes');
+            $response = array(
+                'status' => 'success',
+                'code' => 200,
+                'data' => $data
+            );
+        } else {
+            $response = array(
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Recurso Vacio o no Encontrado'
+            );
+        }
+        return response()->json($response, $response['code']);
     }
 
     /**
@@ -61,15 +61,13 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $json = $request->input('json', null);
-        $data = json_decode($json,true);
+        $data = json_decode($json, true);
         if (!empty($data)) {
             $data = array_map('trim', $data);
             $rules = [
-                #'id' => 'required|numeric',
-                'idEmployee' => 'required|numeric',
-                'username' => 'required',
+                'idEmployee' => 'required|numeric|unique:users',
+                'username' => 'required|unique:users',
                 'password' => 'required',
-                'role' => 'required'
             ];
             $valid = \validator($data, $rules);
             if ($valid->fails()) { //se valida un fallo 
@@ -80,20 +78,21 @@ class UserController extends Controller
                     'errors' => $valid->errors()
                 );
             } else { //sin fallos y se procede a agregar
-                    $user = new User();
-                    #$user->id = $data['id'];
-                    $user->idEmployee = $data['idEmployee'];
-                    $user->username = $data['username'];
-                    $user->password = hash('sha256', $data['password']);
-                    $user->role = $data['role'];
-                    $user->save();
-                    $response = array(
-                        'status' => 'success',
-                        'code' => 200,
-                        'message' => 'Datos almacenados exitosamente'
-                    );
-                }
-        }else{
+                $user = new User();
+                #$user->id = $data['id'];
+                $user->idEmployee = $data['idEmployee'];
+                $user->username = $data['username'];
+                $user->role = 'user';
+                $user->password = hash('sha256', $data['password']);
+                $user->role = $data['role'];
+                $user->save();
+                $response = array(
+                    'status' => 'success',
+                    'code' => 200,
+                    'message' => 'Datos almacenados exitosamente'
+                );
+            }
+        } else {
             $response = array(
                 'status' => 'NOT FOUND',
                 'code' => 404,
@@ -148,8 +147,8 @@ class UserController extends Controller
      */
     public function update(Request $request)
     {
-        $json = $request->input('json',null);
-        $data= json_decode($json,true);
+        $json = $request->input('json', null);
+        $data = json_decode($json, true);
         if (!empty($data)) {
             $data = array_map('trim', $data);
             $rules = [
@@ -166,27 +165,26 @@ class UserController extends Controller
                 );
             } else {
                 $username = $data['username'];
-                 unset($data['id']);
-                 unset($data['idEmployee']);
-                 unset($data['create_at']);
-                 $data['password'] = hash('sha256',$data['password']);//se cifra la nueva contraseña
-                 $updated=User::where('username',$username)->update($data);
-                 if($updated>0){
-                     $response=array(
-                         'status'=>'success',
-                         'code'=>200,
-                         'message'=>'Actualizado correctamente'
-                     );
-                 }else{
-                     $response=array(
-                         'status'=>'error',
-                         'code'=>400,
-                         'message'=>'No se pudo actualizar, puede que el usuario no exita'
-                     );
-                 }
+                unset($data['id']);
+                unset($data['idEmployee']);
+                unset($data['create_at']);
+                $data['password'] = hash('sha256', $data['password']); //se cifra la nueva contraseña
+                $updated = User::where('username', $username)->update($data);
+                if ($updated > 0) {
+                    $response = array(
+                        'status' => 'success',
+                        'code' => 200,
+                        'message' => 'Actualizado correctamente'
+                    );
+                } else {
+                    $response = array(
+                        'status' => 'error',
+                        'code' => 400,
+                        'message' => 'No se pudo actualizar, puede que el usuario no exita'
+                    );
+                }
             }
-
-        }else{
+        } else {
             $response = array(
                 'status' => 'NOT FOUND',
                 'code' => 404,
@@ -204,30 +202,29 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        if(isset($id)){
-            $deleted=User::where('id',$id)->delete();
-            if($deleted){
-                $response=array(
-                    'status'=>'success',
-                    'code'=>200,
-                    'message'=>'Eliminado correctamente'
-                    );
-            }else{
-                $response=array(
-                    'status'=>'error',
-                    'code'=>400,
-                    'message'=>'No se pudo eliminar'
-                    );
-            }
-        }
-        else{
-            $response=array(
-                'status'=>'error',
-                'code'=>400,
-                'message'=>'Falta el identificador del recurso'
+        if (isset($id)) {
+            $deleted = User::where('id', $id)->delete();
+            if ($deleted) {
+                $response = array(
+                    'status' => 'success',
+                    'code' => 200,
+                    'message' => 'Eliminado correctamente'
                 );
+            } else {
+                $response = array(
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'No se pudo eliminar'
+                );
+            }
+        } else {
+            $response = array(
+                'status' => 'error',
+                'code' => 400,
+                'message' => 'Falta el identificador del recurso'
+            );
         }
-        return response()->json($response,$response['code']);
+        return response()->json($response, $response['code']);
     }
 
     #metodo de manejo de login
@@ -235,37 +232,45 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $jwtAuth = new JwtAuth();
-        $json=$request->input('json',null);
-        $data=json_decode($json,true);
-        $data=array_map('trim',$data);
-        $rule=[
-            'username' => 'required',
-            'password' => 'required',
-        ];
-        $validated = \validator($data,$rule);
-        if($validated->fails()){
+        $json = $request->input('json', null);
+        $data = json_decode($json,true);
+        if (!empty($data)) {
+            $data = array_map('trim', $data);
+            $rule = [
+                'username' => 'required',
+                'password' => 'required',
+            ];
+            $validated = \validator($data, $rule);
+            if ($validated->fails()) {
+                $response = array(
+                    'status' => 'error',
+                    'code' => '406',
+                    'message' => 'Los datos enviados son incorrectos',
+                    'errors' => $validated->errors()
+                );
+            } else {
+                $response = $jwtAuth->signin($data['username'], $data['password']);
+            }
+            if (isset($response['code'])) {
+                return response()->json($response, $response['code']);
+            } else {
+                return response()->json($response, 200);
+            }
+        } else {
             $response = array(
-                'status'=>'error',
-                'code'=>'406',
-                'message'=>'Los datos enviados son incorrectos',
-                'errors'=>$validated->errors()
+                'status' => 'NOT FOUND',
+                'code' => 404,
+                'message' => 'Datos no encontrados'
             );
-        }else{
-            $response = $jwtAuth->signin($data['username'],$data['password']);
         }
-        if(isset($response['code'])){
-            return response()->json($response,$response['code']);
-        }else{
-            return response()->json($response,200);
-        }
+        return response()->json($response, $response['code']);
     }
 
-    public function getIdentity(Request $request){//se valida la identidad
+    public function getIdentity(Request $request)
+    { //se valida la identidad
         $jwtAuth = new JwtAuth();
         $token = $request->header('token');
         $response = $jwtAuth->verify($token,true);
         return response()->json($response);
     }
-
-    
 }

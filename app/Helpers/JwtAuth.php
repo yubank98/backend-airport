@@ -2,7 +2,6 @@
 namespace App\Helpers;
 use Firebase\JWT\JWT;
 use App\Models\User;
-use PhpParser\Mode\Stmt\TryCatch;
 
 class JwtAuth{
     private $key;
@@ -34,8 +33,7 @@ class JwtAuth{
         return $data;
     }
 
-    public function verify($token,$getIdentity=false)
-    {
+    public function verify($token,$getIdentity=false){
         $auth=false;
         try{
             $decoded=JWT::decode($token,$this->key,['HS256']);

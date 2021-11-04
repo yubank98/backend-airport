@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\FlightCatalog;
 use Illuminate\Http\Request;
+use DB;
 
 class FlightCatalogController extends Controller
 {
@@ -14,7 +15,7 @@ class FlightCatalogController extends Controller
      */
     public function index()
     {
-        $data = FlightCatalog::all();
+        $data = DB::select("select * from v_flight_info v order by v.[codigo]"); 
         if (!empty($data)) {
            //$data = $data->load('aeroline','departure','arrival');
              $response = array(

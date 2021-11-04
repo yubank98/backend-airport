@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Airline;
 use Illuminate\Http\Request;
+use DB;
 
 class AirlineController extends Controller
 {
@@ -21,20 +22,20 @@ class AirlineController extends Controller
     {
         $data = Airline::all();
         if (!empty($data)) {
-             //$data = $data->load('airplanes');
-             $response = array(
-                 'status' => 'success',
-                 'code' => 200,
-                 'data' => $data
-             );
-         } else {
-             $response = array(
-                 'status' => 'error',
-                 'code' => 404,
-                 'message' => 'Recurso Vacio o no Encontrado'
-             );
-         }
-         return response()->json($response, $response['code']);
+            //$data = $data->load('airplanes');
+            $response = array(
+                'status' => 'success',
+                'code' => 200,
+                'data' => $data
+            );
+        } else {
+            $response = array(
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Recurso Vacio o no Encontrado'
+            );
+        }
+        return response()->json($response, $response['code']);
     }
 
     /**
@@ -56,7 +57,7 @@ class AirlineController extends Controller
     public function store(Request $request)
     {
         $json = $request->input('json', null);
-        $data = json_decode($json,true);
+        $data = json_decode($json, true);
         if (!empty($data)) {
             $data = array_map('trim', $data);
             $rules = [
@@ -111,13 +112,13 @@ class AirlineController extends Controller
     public function show($id)
     {
         $data = Airline::find($id);
-        if(is_object($data)){
+        if (is_object($data)) {
             $response = array(
                 'status' => 'success',
                 'code' => 200,
                 'data' => $data
             );
-        }else{
+        } else {
             $response = array(
                 'status' => 'error',
                 'code' => 404,
@@ -220,6 +221,53 @@ class AirlineController extends Controller
                 'status' => 'error',
                 'code' => 400,
                 'message' => 'Falta el identificador del recurso'
+            );
+        }
+        return response()->json($response, $response['code']);
+    }
+
+
+    //funciones escalares
+    //funcion que retorna el numero de aviones que posee una aerolinea
+    public function airlineStock(Request $request)
+    {
+        $json = $request->input('json', null);
+        $data = json_decode($json, true);
+        if (!empty($data)) {
+            $data = array_map('trim', $data);
+            $rules = [ //se dictan las reglas en cuanto al ingreso de los datos
+                'alias' => 'required'
+            ];
+            $validate = \validator($data, $rules);
+            if ($validate->fails()) { //determina si los datos siguen las reglas
+                $response = array(
+                    'status' => 'error',
+                    'code' => 406,
+                    'message' => 'Los datos enviados son incorrectos',
+                    'errors' => $validate->errors()
+                );
+            } else {
+                $alias = $data['alias'];
+                $stock = DB::select("Select dbo.f_AirlineStock ('$alias')");
+                if (!empty($stock)) {
+                    $response = array(
+                        'status' => 'success',
+                        'code' => 200,
+                        'data' => $stock
+                    );
+                } else {
+                    $response = array(
+                        'status' => 'error',
+                        'code' => 400,
+                        'message' => 'No se pudieron encontrar los datos'
+                    );
+                }
+            }
+        } else {
+            $response = array(
+                'status' => 'error',
+                'code' => 400,
+                'message' => 'Ya wey, me dio amsiedad'
             );
         }
         return response()->json($response, $response['code']);

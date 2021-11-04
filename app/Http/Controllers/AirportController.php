@@ -45,7 +45,7 @@ class AirportController extends Controller
         if (!empty($data)){
             $data = array_map('trim', $data);
             $rules = [ //se dictan las reglas en cuanto al ingreso de los datos
-                'idAirport' => 'required',
+                'idAirport' => 'required|numeric',
             ];
             $validate = \validator($data, $rules);
             if ($validate->fails()) { //determina si los datos siguen las reglas
@@ -89,15 +89,10 @@ class AirportController extends Controller
      */
     public function create()
     {
-        
+      //invalide   
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    //funcion store utilizando una funcion escalar
     public function store(Request $request)
     {
         $json = $request->input('json', null);

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Helpers\JwtAuth;
+use DB;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class UserController extends Controller
 {
@@ -273,4 +275,50 @@ class UserController extends Controller
         $response = $jwtAuth->verify($token,true);
         return response()->json($response);
     }
+
+    //METODO DE CREACION DE UN RESPALDO
+    public function backupBD(Request $request){
+        $json = $request->input('json', null);
+        $data = json_decode($json,true);
+        if (!empty($data)) {
+            $data = array_map('trim', $data);
+            $rules = [
+                'name' => 'required'
+            ];
+            $valid = \validator($data, $rules);
+            if ($valid->fails()) {
+                $response = array(
+                    'status' => 'error',
+                    'code' => 406,
+                    'message' => 'Los datos son incorrectos',
+                    'errors' => $valid->errors()
+                );
+            } else {
+                $name = [$data['name']];
+                $save = DB::insert(DB::raw('EXEC spBackUpDB ?'),$name);
+                if ($save) {
+                    $response = array(
+                        'status' => 'success',
+                        'code' => 200,
+                        'message' => 'Copia de seguridad creada exitosamente'
+                    );
+                } else {
+                    $response = array(
+                        'status' => 'error',
+                        'code' => 400,
+                        'message' => 'No se pudo crear el respaldo de los datos'
+                    );
+                }
+            }
+        } else {
+            $response = array(
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Recurso no encontrado'
+            );
+        }
+        return response()->json($response, $response['code']);
+    }
+
+
 }

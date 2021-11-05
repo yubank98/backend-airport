@@ -16,7 +16,7 @@ class FlightController extends Controller
     {
         $data = Flight::all();
         if (!empty($data)) {
-            $data = $data->load('arrival','departure','pilot','coPilot','airplane');
+            //$data = $data->load('arrival','departure','pilot','coPilot','airplane');
               $response = array(
                   'status' => 'success',
                   'code' => 200,
@@ -234,4 +234,6 @@ class FlightController extends Controller
         }
         return response()->json($response, $response['code']);
     }
+
+
 }

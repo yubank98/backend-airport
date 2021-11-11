@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Helpers\JwtAuth;
-use DB;
-use Illuminate\Support\Facades\DB as FacadesDB;
 
 class UserController extends Controller
 {
@@ -67,8 +65,8 @@ class UserController extends Controller
         if (!empty($data)) {
             $data = array_map('trim', $data);
             $rules = [
-                'idEmployee' => 'required|numeric|unique:users',
-                'username' => 'required|unique:users',
+                'idEmployee' => 'required|numeric|unique:Sys_User',
+                'username' => 'required|unique:Sys_User',
                 'password' => 'required',
             ];
             $valid = \validator($data, $rules);
@@ -84,9 +82,8 @@ class UserController extends Controller
                 #$user->id = $data['id'];
                 $user->idEmployee = $data['idEmployee'];
                 $user->username = $data['username'];
-                $user->role = 'user';
                 $user->password = hash('sha256', $data['password']);
-                $user->role = $data['role'];
+                $user->role = "user";
                 $user->save();
                 $response = array(
                     'status' => 'success',

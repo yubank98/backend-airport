@@ -17,7 +17,7 @@ class ApiAuthMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        /*$jwtAuth=new JwtAuth();
+        $jwtAuth=new JwtAuth();
         $token=$request->header('token');
         $logged=$jwtAuth->verify($token);
         if($logged){
@@ -29,7 +29,7 @@ class ApiAuthMiddleware
                 'message' => 'No cuenta con los privilegios necesarios para ingresar a este recurso'
             );
             return response()->json($response,$response['code']);
-        }*/
+        }
         return $next($request);
     }
 }

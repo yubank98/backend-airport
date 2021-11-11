@@ -13,4 +13,7 @@ class Employee extends Model
     public function airport(){
         return $this->belongsTo('App\Models\Airport','airport');
     }
+    public function user(){
+        return $this->belongsTo('App\Models\User','idEmployee');
+    }
 }

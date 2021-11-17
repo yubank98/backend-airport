@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Airline;
 use Illuminate\Http\Request;
+use DB;
 
 class AirlineController extends Controller
 {
@@ -21,20 +22,20 @@ class AirlineController extends Controller
     {
         $data = Airline::all();
         if (!empty($data)) {
-             //$data = $data->load('airplanes');
-             $response = array(
-                 'status' => 'success',
-                 'code' => 200,
-                 'data' => $data
-             );
-         } else {
-             $response = array(
-                 'status' => 'error',
-                 'code' => 404,
-                 'message' => 'Recurso Vacio o no Encontrado'
-             );
-         }
-         return response()->json($response, $response['code']);
+            //$data = $data->load('airplanes');
+            $response = array(
+                'status' => 'success',
+                'code' => 200,
+                'data' => $data
+            );
+        } else {
+            $response = array(
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Recurso Vacio o no Encontrado'
+            );
+        }
+        return response()->json($response, $response['code']);
     }
 
     /**
@@ -56,7 +57,7 @@ class AirlineController extends Controller
     public function store(Request $request)
     {
         $json = $request->input('json', null);
-        $data = json_decode($json,true);
+        $data = json_decode($json, true);
         if (!empty($data)) {
             $data = array_map('trim', $data);
             $rules = [
@@ -111,13 +112,13 @@ class AirlineController extends Controller
     public function show($id)
     {
         $data = Airline::find($id);
-        if(is_object($data)){
+        if (is_object($data)) {
             $response = array(
                 'status' => 'success',
                 'code' => 200,
                 'data' => $data
             );
-        }else{
+        } else {
             $response = array(
                 'status' => 'error',
                 'code' => 404,

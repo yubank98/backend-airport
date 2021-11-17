@@ -43,15 +43,10 @@ class AirportController extends Controller
      */
     public function create()
     {
-        
+      //invalide   
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    //funcion store utilizando una funcion escalar
     public function store(Request $request)
     {
         $json = $request->input('json', null);

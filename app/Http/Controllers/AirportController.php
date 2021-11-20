@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Airport;
 use Illuminate\Http\Request;
-use DB;
+use Illuminate\Support\Facades\DB;
 class AirportController extends Controller
 {
     public function __construct()
     {
-      //middleware  
+      //middleware
     }
     /**
      * Display a listing of the resource.
@@ -43,7 +43,7 @@ class AirportController extends Controller
      */
     public function create()
     {
-      //invalide   
+      //invalide
     }
 
     //funcion store utilizando una funcion escalar

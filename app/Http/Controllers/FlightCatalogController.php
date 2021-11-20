@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\FlightCatalog;
 use Illuminate\Http\Request;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class FlightCatalogController extends Controller
 {
@@ -15,7 +15,7 @@ class FlightCatalogController extends Controller
      */
     public function index()
     {
-        $data = DB::select("select * from v_flight_info v order by v.[codigo]"); 
+        $data = DB::select("select * from v_flight_info v order by v.[codigo]");
         if (!empty($data)) {
            //$data = $data->load('aeroline','departure','arrival');
              $response = array(
@@ -205,7 +205,7 @@ class FlightCatalogController extends Controller
      */
     public function destroy($id)
     {
-        
+
         if (isset($id)) {
             $deleted = FlightCatalog::where('id', $id)->delete();
             if ($deleted) {

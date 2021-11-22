@@ -30,5 +30,6 @@ class ApiAuthMiddleware
             );
             return response()->json($response,$response['code']);
         }
+        return $next($request);
     }
 }

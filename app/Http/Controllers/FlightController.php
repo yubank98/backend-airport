@@ -208,7 +208,7 @@ class FlightController extends Controller
      * @param  \App\Models\Flight  $flight
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Flight $flight)
+    public function destroy($id)
     {
         if (isset($id)) {
             $deleted = Flight::where('id', $id)->delete();
@@ -234,4 +234,5 @@ class FlightController extends Controller
         }
         return response()->json($response, $response['code']);
     }
+
 }

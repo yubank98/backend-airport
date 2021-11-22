@@ -17,7 +17,7 @@ class AirplaneController extends Controller
     {
         $data = Airplane::all();
         if (!empty($data)) {
-            //$data = $data->load('airline');
+            $data = $data->load('airline');
              $response = array(
                  'status' => 'success',
                  'code' => 200,
@@ -152,9 +152,10 @@ class AirplaneController extends Controller
             $data = array_map('trim', $data);
             $rules = [ //se dictan las reglas en cuanto al ingreso de los datos
                 'id' => 'required|numeric',
-                'name' => 'required',
-                'surname' => 'required|alpha',
-                'airport' => 'required|numeric'
+                'airline' => 'required',
+                'model' => 'required|alpha',
+                'desing' => 'required|alpha',
+                'capacity' => 'required'
             ];
             $validate = \validator($data, $rules);
             if ($validate->fails()) { //determina si los datos siguen las reglas
@@ -199,7 +200,7 @@ class AirplaneController extends Controller
      * @param  \App\Models\Airplane  $airplane
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Airplane $airplane)
+    public function destroy($id)
     {
         if (isset($id)) {
             $deleted = Airplane::where('id', $id)->delete();

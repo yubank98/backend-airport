@@ -20,7 +20,7 @@ class EmployeeController extends Controller
     {
         $data = Employee::all();
         if (!empty($data)) {
-            //$data = $data->load('airport');
+            $data = $data->load('airport');
              $response = array(
                  'status' => 'success',
                  'code' => 200,
@@ -147,7 +147,7 @@ class EmployeeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
-    {   
+    {
         $json = $request->input('json', null);
         $data = json_decode($json, true);
         if (!empty($data)) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\FlightCatalog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FlightCatalogController extends Controller
 {
@@ -14,7 +15,7 @@ class FlightCatalogController extends Controller
      */
     public function index()
     {
-        $data = FlightCatalog::all();
+        $data = DB::select("select * from v_flight_info v order by v.[codigo]");//se manda a llamar la vista
         if (!empty($data)) {
            //$data = $data->load('aeroline','departure','arrival');
              $response = array(
@@ -155,9 +156,12 @@ class FlightCatalogController extends Controller
             $data = array_map('trim', $data);
             $rules = [ //se dictan las reglas en cuanto al ingreso de los datos
                 'id' => 'required|numeric',
-                'name' => 'required',
-                'surname' => 'required|alpha',
-                'airport' => 'required|numeric'
+                'aeroline' => 'required|numeric',
+                'departure' => 'required|numeric',
+                'arrival' => 'required|numeric',
+                'estimated_time' => 'required',
+                'price_ticket' => 'required|numeric',
+                'status' => 'required|alpha'
             ];
             $validate = \validator($data, $rules);
             if ($validate->fails()) { //determina si los datos siguen las reglas
@@ -204,7 +208,7 @@ class FlightCatalogController extends Controller
      */
     public function destroy($id)
     {
-        
+
         if (isset($id)) {
             $deleted = FlightCatalog::where('id', $id)->delete();
             if ($deleted) {

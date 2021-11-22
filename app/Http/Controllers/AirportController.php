@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Airport;
 use Illuminate\Http\Request;
-use DB;
+use Illuminate\Support\Facades\DB;
 class AirportController extends Controller
 {
     public function __construct()
     {
-      //middleware  
+      //middleware
     }
     /**
      * Display a listing of the resource.
@@ -43,15 +43,10 @@ class AirportController extends Controller
      */
     public function create()
     {
-        
+      //invalide
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    //funcion store utilizando una funcion escalar
     public function store(Request $request)
     {
         $json = $request->input('json', null);

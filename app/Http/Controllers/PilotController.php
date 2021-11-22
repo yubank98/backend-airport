@@ -16,7 +16,7 @@ class PilotController extends Controller
     {
         $data = Pilot::all();
         if (!empty($data)) {
-           //$data = $data->load('employee');
+           $data = $data->load('employee');
              $response = array(
                  'status' => 'success',
                  'code' => 200,
@@ -105,6 +105,7 @@ class PilotController extends Controller
     {
         $data = Pilot::find($id);
         if(is_object($data)){
+            $data = $data->load('employee');
             $response = array(
                 'status' => 'success',
                 'code' => 200,

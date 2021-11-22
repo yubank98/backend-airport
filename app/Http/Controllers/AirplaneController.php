@@ -110,7 +110,7 @@ class AirplaneController extends Controller
      */
     public function show($id)
     {
-        $data = Airport::find($id);
+        $data = Airplane::find($id);
         if(is_object($data)){
             $response = array(
                 'status' => 'success',
@@ -152,9 +152,10 @@ class AirplaneController extends Controller
             $data = array_map('trim', $data);
             $rules = [ //se dictan las reglas en cuanto al ingreso de los datos
                 'id' => 'required|numeric',
-                'name' => 'required',
-                'surname' => 'required|alpha',
-                'airport' => 'required|numeric'
+                'airline' => 'required',
+                'model' => 'required',
+                'desing' => 'required|alpha',
+                'capacity' => 'required|numeric'
             ];
             $validate = \validator($data, $rules);
             if ($validate->fails()) { //determina si los datos siguen las reglas
